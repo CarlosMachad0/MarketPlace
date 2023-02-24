@@ -1,0 +1,73 @@
+{% extends 'generic-base/comercialOne-base.html' %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h1 class="mt-4">Lista de Fornecedores</h1>
+        <hr class="my-4">            
+        <div class="card">
+            <div class="card-body">
+                <ul class="list-group">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th style="font-weight: bold;" scope="col">Nome</th>
+                            <th style="font-weight: bold;" scope="col">Email</th>
+                            <th style="font-weight: bold;" scope="col">Telefone</th>
+                            <th style="font-weight: bold;" scope="col">Endereço</th>
+                            <th style="font-weight: bold;" scope="col">NIF</th>
+                            <th style="font-weight: bold;" scope="col">Status</th>
+                            <th style="font-weight: bold;" scope="col">Ações</th>
+                        </tr>
+                        </thead>
+                        {% for provider in providers %}
+                            <tbody style="border-top: 0px;">
+                            <tr>        
+                                <td>{{ provider.name }}</td>
+                                <td>{{ provider.email }}</td>
+                                <td>{{ provider.telephone }}</td>
+                                <td>{{ provider.adress }} </td>
+                                <td>{{ provider.nif }} </td>
+                                {% if provider.status %} <td> 🟢 Ativo </td> {% else %} <td> 🔴 Desativo </td> {% endif %}
+                                <td style="display: flex;">  
+                                    {% if provider.status %} 
+                                    <form method="POST" action="{% url 'update-provider-status' provider.id %}" style="margin-right: 5px">
+                                        {% csrf_token %}
+                                        <button value="true" type="submit" style="font-weight: bold;" class="btn btn-danger">Desativar</button>
+                                    </form>
+                                    {% else %}
+                                    <form method="POST" action="{% url 'update-provider-status' provider.id %}" style="margin-right: 5px">
+                                        {% csrf_token %}
+                                        <button value="false" type="submit" style="font-weight: bold;" class="btn btn-success">Ativar</button>
+                                    </form>
+                                    {% endif %}
+                                    <form method="POST" action="{% url 'delete-provider' provider.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" style="font-weight: bold;" class="btn btn-danger">Eliminar</button>
+                                    </form>
+                                </td>
+                            </tr> 
+                        {% empty %}
+                        <li class="list-group-item">
+                            <span>Sem produtos encontrados.</span>
+                        </li>
+                        {% endfor %}   
+                    </table>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <h5 style="color: red!important; font-size: 20px;" class="mb-0 text-muted">
+                                {% for message in messages %}
+                                    {{ message }}
+                                {% endfor %}
+                            </h5>
+                        </div>
+                        <div style="display: flex; justify-content: flex-end;">
+                        <form action="{% url 'create-provider' %}">
+                            <button type="submit" style="font-weight: bold;" class="btn btn-outline-primary">Criar Fornecedor</button>
+                        </form>
+                    </div>
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'generic-base/comercialOne-base.html' %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h1 class="mt-4">Lista de Categorias</h1>
+        <hr class="my-4">    
+            
+        <div class="card">
+            <div class="card-body">
+                <ul class="list-group">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th style="font-weight: bold;" scope="col">Nome Categoria</th>
+                            <th style="font-weight: bold;" scope="col">Descrição</th>
+                            <th style="font-weight: bold;" scope="col">Validado</th>
+                            <th style="font-weight: bold;" scope="col">Status</th>
+                            <th style="font-weight: bold;" scope="col">Ações</th>
+                        </tr>
+                        </thead>
+                        {% for category in categorys %}
+                            <tbody style="border-top: 0px;">
+                            <tr>                  
+                                <td>{{ category.name }}</td>
+                                <td>{{ category.description }}</td>
+                                {% if category.validated %} <td> 🟢 Validado </td> {% else %} <td> 🔴 Por validar </td> {% endif %}
+                                {% if category.status %} <td> 🟢 Ativo </td> {% else %} <td> 🔴 Desativo </td> {% endif %}
+
+                                <td style="display: flex;">
+                                    {% if category.validated %}
+                                        <form method="POST" action="{% url 'validate-category' category.id %}" style="margin-right: 5px">
+                                            {% csrf_token %}
+                                            <button value="true" type="submit" style="font-weight: bold;" class="btn btn-danger">Invalidar</button>
+                                        </form>
+                                    {% else %}
+                                        <form method="POST" action="{% url 'validate-category' category.id %}" style="margin-right: 5px">
+                                            {% csrf_token %}
+                                            <button value="false" type="submit" style="font-weight: bold;" class="btn btn-success">Validar</button>
+                                        </form>
+                                    {% endif %}
+                                    {% if category.status %}
+                                        <form method="POST" action="{% url 'update-status-category' category.id %}" style="margin-right: 5px">
+                                            {% csrf_token %}
+                                            <button value="true" type="submit" style="font-weight: bold;" class="btn btn-danger">Desativar</button>
+                                        </form>
+                                    {% else %}
+                                        <form method="POST" action="{% url 'update-status-category' category.id %}" style="margin-right: 5px">
+                                            {% csrf_token %}
+                                            <button value="false" type="submit" style="font-weight: bold;" class="btn btn-success">Ativar</button>
+                                        </form>
+                                    {% endif %}
+
+                                    <form method="POST" action="{% url 'delete-category' category.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" style="font-weight: bold;" class="btn btn-danger">Eliminar</button>
+                                    </form> 
+                                </td>                
+                            </tr>
+                        {% empty %}
+                        <li class="list-group-item">
+                            <span>Sem categorias encontradas.</span>
+                        </li>
+                        {% endfor %}   
+                        
+                    </table>
+
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <h5 style="color: red!important; font-size: 20px;" class="mb-0 text-muted">
+                                {% for message in messages %}
+                                    {{ message }}
+                                {% endfor %}
+                            </h5>
+                        </div>
+                        <div class="col-sm-4" style="display: flex; justify-content: flex-end;">
+                            <form action="{% url 'create-categorys' %}">
+                                <button type="submit" style="font-weight: bold;" class="btn btn-outline-primary">Criar Categoria</button>
+                            </form>
+                        </div>
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

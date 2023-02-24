@@ -1,0 +1,63 @@
+{% extends 'generic-base/auth-base.html' %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+      <div class="card border-0 shadow rounded-3 my-5">
+        <div class="card-body p-4 p-sm-5">
+          <h5 class="card-title text-center mb-5 fw-light fs-5 text-uppercase fw-bold">Preencha os dados e crie já a sua conta.</h5>
+          <form method="POST" action="{% url 'auth-client-register-submit' %}" autocomplete="off" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="username" name="username" placeholder="Insira o seu nome">
+              <label for="username">Nome de Utilizador</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Insira o seu primeiro nome">
+              <label for="first_name">Nome</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Insira o seu sobrenome">
+              <label for="last_name">Sobrenome</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
+              <label for="email">Email</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="password" class="form-control" id="password1" name="password1" placeholder="Password">
+              <label for="password1">Password</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="password" class="form-control" id="password2" name="password2" placeholder="Password">
+              <label for="password2">Confirmar Password</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="date" class="form-control" id="birthDate" name="birthDate" placeholder="Data de Nascimento">
+              <label for="birthDate">Data de Nascimento</label>
+            </div>
+
+            <div class="d-grid">
+              <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">Criar Conta</button>
+            </div>
+            <hr class="my-4">
+          </form>
+          <div style="display: flex; justify-content: center;">
+            <h5 style="color: red!important; padding-top: 5%; font-size: 15px;" class="mb-0 text-muted">
+              {% for message in messages %}
+                  {{message }}
+              {% endfor %}
+            </h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

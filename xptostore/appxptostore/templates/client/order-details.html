@@ -1,0 +1,58 @@
+{% extends 'generic-base/client-base.html' %}
+
+{% block content %}
+<div class="my-5" style="padding-left: 3%; padding-right: 3%;">
+    <!-- Shopping cart table -->
+    <div class="card">
+        <div class="card-header">
+            <h2>Detalhes da encomenda</h2>
+        </div>
+        <form method="POST" action="{% url 'exportfatura' order_id %}">
+          {% csrf_token %}
+          <button style="margin-left: 20px;" type="submit" class="btn btn-lg btn-success mt-2">Exportar Fatura</button>
+        </form>
+        <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered m-0">
+                <thead>
+                  <tr>
+                    <!-- Set columns width -->
+                    <th class="text-center py-3 px-4" style="min-width: 300px;">Produto</th>
+                    <th class="text-right py-3 px-4" style="width: 100px;">Preço</th>
+                    <th class="text-center py-3 px-4" style="width: 120px;">Quantidade</th>
+                    <th class="text-right py-3 px-4" style="width: 270px;">Total</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {% for product in orderProduct %}
+                    <tr>
+                      <td class="p-4">
+                        <div class="media align-items-center">
+                          <img style="width: 100px; height: 100px" src="/appxptostore{{product.image}}" class="d-block ui-w-40 ui-bordered mr-4" alt="">
+                          <div class="media-body">
+                            <a href="#" class="d-block text-dark">{{ product.name }}</a>
+                            <small>
+                            </small>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="text-right font-weight-semibold align-middle p-4"> {{ product.price }} € </td>
+                      <td class="text-right font-weight-semibold align-middle p-4">{{product.quantity}} </td>
+                      <td class="text-right font-weight-semibold align-middle p-4">{{product.productTotal}} €</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div class="d-flex" style="justify-content: flex-end;">
+              <div class="d-flex">
+                <div class="text-right mt-4">
+                  <label class="text-muted font-weight-bold m-0" style="font-size: 25px;">Preço Total</label>
+                  <div class="text-large" style="font-size: 25px; color: red;"><strong>{{ totalPrice }} €</strong></div>
+                </div>
+              </div>
+            </div>
+      </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'generic-base/auth-base.html' %}
+
+{% block content %}
+    <div class="container px-3 my-5 clearfix">
+    <!-- Shopping cart table -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Checkout</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{% url 'submitEncomenda' %}">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="adress" name="adress" placeholder="Insira o endereço de entrega c/ código postal" required>
+                        <label for="adress">Endereço de Entrega + Código Postal</label>
+                    </div>
+        
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="inputCC" name="inputCC" placeholder="Insira o cartão bancário" required> 
+                        <label for="inputCC">Cartão Bancário</label>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-lg btn-outline-success mt-2">Confirmar encomenda</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

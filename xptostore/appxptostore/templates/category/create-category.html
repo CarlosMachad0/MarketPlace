@@ -1,0 +1,38 @@
+{% extends 'generic-base/comercialOne-base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mt-4">Criar Categoria</h1>
+    <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active">Categoria</li>
+        </ol>
+    <hr class="my-4">        
+    <div class="container" style="margin-left: 0;">
+        <form method="POST" action="{% url 'create-category-submit' %}" autocomplete="off" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="name" name="name" placeholder="Insira o nome da categoria" required>
+              <label for="name">Nome da Categoria</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="description" name="description" placeholder="Insira a descrição" required>
+              <label for="name">Descrição</label>
+            </div>
+
+            <div class="d-grid">
+              <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">Inserir Categoria</button>
+            </div>
+
+        </form>
+        <div style="display: flex; justify-content: center;">
+            <h5 style="color: red!important; padding-top: 3%; font-size: 15px;" class="mb-0 text-muted">
+                {% for message in messages %}
+                    {{message }}
+                {% endfor %}
+            </h5>
+        </div>
+    </div>
+</div>
+{% endblock %}

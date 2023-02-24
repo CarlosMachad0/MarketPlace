@@ -1,0 +1,55 @@
+{% extends 'generic-base/auth-base.html' %}
+
+{% block content %}
+<div class="container">
+<section class="py-5" style="margin-bottom: 3%;">
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Editar Perfil</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active">Perfil</li>
+        </ol>
+        <hr class="my-4"> 
+          <form method="POST" action="{% url 'edit-profile-submit' user.id %}" autocomplete="off" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="username" name="username" value= "{{user.username}}" placeholder="Insira o seu nome">
+              <label for="username">Nome de Utilizador</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="first_name" name="first_name" value= "{{user.first_name}}" placeholder="Insira o seu primeiro nome">
+              <label for="first_name">Nome</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="last_name" name="last_name" value="{{user.last_name}}" placeholder="Insira o seu sobrenome">
+              <label for="last_name">Sobrenome</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="email" class="form-control" id="email" name="email" value="{{user.email}}" placeholder="name@example.com">
+              <label for="email">Email</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="date" class="form-control" id="birthDate" name="birthDate" value="{{user.birthDate | date:'c' }}" placeholder="Data de Nascimento">
+              <label for="birthDate">Data de Nascimento</label>
+            </div>
+
+            <div class="d-grid">
+              <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">Confirmar Alterações</button>
+            </div>
+
+          </form>
+          <div style="display: flex; justify-content: center;">
+            <h5 style="color: red!important; padding-top: 5%; font-size: 15px;" class="mb-0 text-muted">
+              {% for message in messages %}
+                  {{message }}
+              {% endfor %}
+            </h5>
+          </div>
+    </div>  
+</section>    
+</div>  
+{% endblock %}

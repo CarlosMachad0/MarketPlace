@@ -1,0 +1,72 @@
+{% extends 'generic-base/admin-base.html' %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h1 class="mt-4">Criar Utilizador</h1>
+        <hr class="my-4">        
+        
+        <div class="container" style="margin-left: 0;">
+            <form method="POST" action="{% url 'auth-register-user-submit' %}" autocomplete="off" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Insira o seu nome" required>
+                    <label for="username">Nome de Utilizador</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Insira o seu primeiro nome" required>
+                    <label for="first_name">Nome</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Insira o seu sobrenome" required>
+                    <label for="last_name">Sobrenome</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                    <label for="email">Email</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="password1" name="password1" placeholder="Password" required>
+                    <label for="password1">Password</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="password2" name="password2" placeholder="Password" required>
+                    <label for="password2">Confirmar Password</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input type="date" class="form-control" id="birthDate" name="birthDate" placeholder="Data de Nascimento" required>
+                    <label for="birthDate">Data de Nascimento</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <select id="select" name="select" class="form-select" required>
+                        <option>Escolha o tipo de Utilizador</option>
+                        {% for option in options %}
+                            <option value="{{ option.value }}">{{ option.label }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="select">Tipo de Utilizador:</label>
+                </div>
+
+                <div class="d-grid">
+                    <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">Criar Conta</button>
+                </div>
+
+                <hr class="my-4">
+            </form>
+
+            <div style="display: flex; justify-content: center;">
+                <h5 style="color: red!important; font-size: 15px;" class="mb-0 text-muted">
+                    {% for message in messages %}
+                        {{message }}
+                    {% endfor %}
+                </h5>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'generic-base/comercialOne-base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mt-4">Editar Produto</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Produto</li>
+    </ol>
+    <hr class="my-4">        
+    <div class="container" style="margin-left: 0;">
+        <form method="POST" autocomplete="off" action="{% url 'edit-product-submit' product.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="name" name="name" placeholder="Insira o nome do produto" value= "{{product.name}}" required>
+              <label for="name">Nome do Produto</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="quantity" name="quantity" placeholder="Insira a quantidade de produto"  value= "{{product.quantity}}" required> 
+              <label for="quantity">Quantidade</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="description" name="description" placeholder="Insira a descrição" value= "{{product.description}}" required>
+              <label for="description">Descrição</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="number" class="form-control" id="price" name="price" placeholder="Insira o preço" value= "{{product.price}}" required>
+              <label for="price">Preço</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="number" class="form-control" id="promo_price" name="promo_price" placeholder="Insira o preço em promoção" value= "{{product.promo_price}}">
+                <label for="price">Preço em Promoção (0 - default)</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <select id="select" name="select" class="form-select" required>
+                    {% for category in categorys %}
+                        {% if category.id == product.procuctCategory %}
+                            <option value="{{ category.id }}" selected>{{ category.name }}</option>
+                        {% else %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <label for="select">Tipo de Utilizador:</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <select id="selectfornecedor" name="selectfornecedor" class="form-select" required>
+                  {% for provider in providers %}
+                      {% if provider.id == product.productFornecedor %}
+                          <option value="{{ provider.id }}" selected>{{ provider.name }}</option>
+                      {% else %}
+                          <option value="{{ provider.id }}">{{ provider.name }}</option>
+                      {% endif %}
+                  {% endfor %}
+              </select>
+              <label for="select">Fornecedor:</label>
+          </div>
+
+            <div class="mb-3">
+                {% if product.image %}        
+                    <img src="/appxptostore{{product.image.url}}" alt="{{product.name}}" style="width: 100px; height: 100px;">
+                {% endif %}
+                <input type="file" name="image" class="form-control">
+            </div>
+
+            <div class="d-grid">
+              <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">Confirmar Alterações</button>
+            </div>
+          </form>
+          <div style="display: flex; justify-content: center;">
+            <h5 style="color: red!important; padding-top: 3%; font-size: 15px;" class="mb-0 text-muted">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </h5>
+          </div>      
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends 'generic-base/admin-base.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <h1 class="mt-4">Lista de Utilizadores </h1>
+        <div class="card">
+            <div class="card-body">
+                <div class="form-floating mb-3" style="padding:5px !important; width: 40% !important;">
+                    <form action="{% url 'list-users' %}" method="POST" style="display: flex !important ">
+
+                    <select id="role" name="role" class="form-select" required>
+                        <option >Escolha o tipo de Utilizador</option>
+                        {% for option in options %}
+                            <option value="{{ option.value }}">{{ option.label }}</option>
+                        {% endfor %}
+                    </select>
+                            {% csrf_token %}
+                            <button type="submit" style="font-weight: bold; margin-left:10px!important;" class="btn btn-primary">Pesquisar Utilizadores</button>
+                        </form>
+                </div>
+                <ul class="list-group">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th style="font-weight: bold;" scope="col">Nome Utilizador</th>
+                            <th style="font-weight: bold;" scope="col">Nome</th>
+                            <th style="font-weight: bold;" scope="col">Sobrenome</th>
+                            <th style="font-weight: bold;" scope="col">Email</th>
+                            <th style="font-weight: bold;" scope="col">Status</th>
+                            <th style="font-weight: bold;" scope="col">Tipo</th>
+                            <th style="font-weight: bold;" scope="col">Ações</th>
+                        </tr>
+                        </thead>
+                        {% for user in users %}
+                            <tbody style="border-top: 0px;">
+                            <tr>                  
+                                <td>{{user.username}}</td>      
+                                <td>{{user.first_name}}</td>    
+                                <td>{{user.last_name}}</td>    
+                                <td>{{user.email}}</td>    
+
+                                {% if user.is_active %} <td> 🟢 Ativo </td> {% else %} <td> 🔴 Desativo </td> {% endif %}
+
+                                {% if user.isAdmin %} 
+                                    <td> Administrador </td> 
+                                {% elif  user.isClient %} 
+                                    <td> Cliente </td> 
+                                {% elif  user.isComercialTypeOne %} 
+                                    <td> Comercial 1 </td> 
+                                {% elif  user.isComercialTypeTwo %} 
+                                    <td> Comercial 2 </td>
+                                {% elif  user.isPartner %} 
+                                    <td>  Parceiro </td>  
+                                {% endif %} 
+
+                                <td style="display: flex;">  
+                                    {% if user.is_active %} 
+                                    <form method="POST"  style="margin-right: 5px" action="{% url 'activate-user' user.id %}">
+                                        {% csrf_token %}
+                                        <button value="true" type="submit" style="font-weight: bold;" class="btn btn-danger">Desativar</button>
+                                    </form>
+                                    {% else %}
+                                    <form method="POST"  style="margin-right: 5px" action="{% url 'activate-user' user.id %}">
+                                        {% csrf_token %}
+                                        <button value="false" type="submit" style="font-weight: bold;" class="btn btn-success">Ativar</button>
+                                    </form>
+                                    {% endif %}
+                                    <form method="POST" action="{% url 'delete-user' user.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" style="font-weight: bold;" class="btn btn-danger">Eliminar</button>
+                                    </form> 
+                                </td>                
+                            </tr> 
+
+                        {% empty %}
+                        <li class="list-group-item">
+                            <span>Sem clientes encontrados.</span>
+                        </li>
+                        {% endfor %}   
+                        
+                    </table>
+
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <h5 style="color: red!important; font-size: 20px;" class="mb-0 text-muted">
+                                {% for message in messages %}
+                                    {{ message }}
+                                {% endfor %}
+                            </h5>
+                        </div>
+                        <div class="col-sm-4" style="display: flex; justify-content: flex-end;">
+                            <form action="{% url 'auth-register-user-type' %}">
+                                <button type="submit" style="font-weight: bold;" class="btn btn-primary">Criar Utilizadores</button>
+                            </form>
+                        </div>
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,256 @@
+{% extends 'generic-base/comercialTwo-base.html' %}
+
+{% block content %}
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Dashboard</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+
+        <div class="row">
+         <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total de vendas na ultima hora</div>
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col-auto">
+                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{lastHour.0}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fa-solid fa-calendar-days"></i>                  
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total de vendas no ultimo dia</div>
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col-auto">
+                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{todayOrders.0}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fa-solid fa-calendar-days"></i>                   
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+   
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total de vendas na ultima semana</div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{lastWeekOrder.0}}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fa-solid fa-calendar-days"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total de vendas no ultimo mes</div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{lastMonthOrder.0}}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fa-solid fa-calendar-days"></i>                  
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4" style="width:70% !important;margin:auto;">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total de vendas por range de datas</div>
+                            <div class="row no-gutters align-items-center">
+                           
+                                <form action="{% url 'comercialTwo-view' %}" method="POST" style="display: flex !important ">
+                                    {% csrf_token %}
+                                        <div class="col-auto" style="display: flex !important;">
+                                            <input id="startDate" name="startDate" class="form-control" value = "{{startDate}}"  type="date" />
+                                        </div>
+                                        <div class="col-auto" style="display: flex !important;">
+                                            -
+                                        </div>
+                                        <div class="col-auto" style="display: flex !important;">
+                                            <input id="endDate"  name="endDate" value = "{{endDate}}" class="form-control" type="date" />
+                                        </div>
+                                        <div class="col-auto" style="display: flex !important;">
+                                        <button type="submit" style="font-weight: bold; margin-left:10px!important;" class="btn btn-primary">Pesquisar </button>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{nOrderInRange}}  {{totalPriceRange}}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fa-solid fa-calendar-days"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    </div>
+        <h2 class="mt-4">Lista de Encomendas</h2>
+        <hr class="my-4">            
+        <div class="card">
+            <div class="card-body">
+                <ul class="list-group">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th style="font-weight: bold;" scope="col">Cliente</th>
+                            <th style="font-weight: bold;" scope="col">Endereço</th>
+                            <th style="font-weight: bold;" scope="col">Pagamento</th>
+                            <th style="font-weight: bold;" scope="col">Data</th>
+                            <th style="font-weight: bold;" scope="col">Estado de Envio</th>
+                            <th style="font-weight: bold;" scope="col">Data de Envio</th>
+                            <th style="font-weight: bold;" scope="col">Estado de encomenda</th>
+                            <th style="font-weight: bold;" scope="col">Preço Total</th>
+                            <th style="font-weight: bold;" scope="col">Detalhes</th>
+                        </tr>
+                        </thead>
+                        {% for order in clientdata %}
+                            <tbody style="border-top: 0px;">
+                            <tr>     
+                                <td>{{ order.client_name }}</td>
+                                <td>{{ order.client_address }}</td>
+                                <td>{{ order.payment_info }}</td>
+                                <td>{{ order.order_data }} </td>
+                                <td>
+                                    {% if order.shipped_status %} 
+                                        <span style="background-color: green; font-size: 15px;" class="badge badge-success">Enviada</span>
+                                        <td>{{ order.shipped_data }}</td>                                
+                                    {% else %}                          
+                                        <span style="background-color: red; font-size: 15px;" class="badge badge-success">Por enviar</span>
+                                        <td>N/a</td>                                
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if order.order_completed %} 
+                                        <span style="background-color: green; font-size: 15px;" class="badge badge-success">Entregue</span>
+                                    {% else %}                          
+                                        <span style="background-color: red; font-size: 15px;" class="badge badge-success">Não entregue</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{order.total_price}} €</td>
+                                <td>
+                                    <form method="POST" action="{% url 'comercialTwo-order-details' order.id  %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-outline-secondary">Ver detalhes da encomenda</button>
+                                    </form>
+                                </td>
+                            </tr> 
+                        {% empty %}
+                        <li class="list-group-item">
+                            <span>Sem Encomendas.</span>
+                        </li>
+                        {% endfor %}   
+                    </table>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <h5 style="color: red!important; font-size: 20px;" class="mb-0 text-muted">
+                                {% for message in messages %}
+                                    {{ message }}
+                                {% endfor %}
+                            </h5>
+                        </div>
+                    </div>
+                </ul>
+            </div>
+        </div>
+      
+        <h2 class="mt-4">Lista de Encomendas Canceladas</h2>
+        <hr class="my-4">            
+        <div class="card">
+            <div class="card-body">
+                <ul class="list-group">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th style="font-weight: bold;" scope="col">Cliente</th>
+                            <th style="font-weight: bold;" scope="col">Endereço</th>
+                            <th style="font-weight: bold;" scope="col">Pagamento</th>
+                            <th style="font-weight: bold;" scope="col">Data</th>
+                            <th style="font-weight: bold;" scope="col">Preço Total</th>
+                            <th style="font-weight: bold;" scope="col">Detalhes</th>
+                        </tr>
+                        </thead>
+                        {% for order in clientdatacanceled %}
+                            <tbody style="border-top: 0px;">
+                            <tr>     
+                                <td>{{ order.client_name }}</td>
+                                <td>{{ order.client_address }}</td>
+                                <td>{{ order.payment_info }}</td>
+                                <td>{{ order.order_data }} </td>                              
+                                <td>{{order.total_price}} €</td>
+                                <td>
+                                    <form method="POST" action="{% url 'comercialOne-order-details' order.id  %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-outline-secondary">Ver detalhes da encomenda</button>
+                                    </form>
+                                </td>
+                            </tr> 
+                        {% empty %}
+                        <li class="list-group-item">
+                            <span>Sem Encomendas.</span>
+                        </li>
+                        {% endfor %}   
+                    </table>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <h5 style="color: red!important; font-size: 20px;" class="mb-0 text-muted">
+                                {% for message in messages %}
+                                    {{ message }}
+                                {% endfor %}
+                            </h5>
+                        </div>
+                    </div>
+                </ul>
+            </div>
+        </div>
+
+    
+    </div>        
+
+  
+{% endblock %}

@@ -1,0 +1,250 @@
+{% extends 'generic-base/auth-base.html' %}
+
+{% block content %}
+<!-- Header-->
+<header style="background-color: #e2fffc;" class="py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 style="color: darkgoldenrod;" class="display-4 fw-bolder">Bem vindo!</h1>
+            <p style="color: darkgoldenrod;" class="lead fw-bolder mb-0 ">A sua loja de eleição</p>
+        </div>
+    </div>
+</header>
+<!-- Section-->
+<div class="container">
+    <section>
+        <div class="container px-4 px-lg-5 mt-5">    
+          <h2 style="text-align: center;padding:1%; color: Black;">Sugestão Produtos mais comprados</h2>
+            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                {% for product in bestProducts %}
+                <div class="col mb-5" >
+                    <div class="card h-100">
+                        {% if product.promo_price|stringformat:"s" > "0.00" and user.is_authenticated %}
+                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">DESCONTO</div>
+                        {% endif %}
+                        <!-- Product image-->
+                        {% if product.image %}
+                        <img class="card-img-top" src="/appxptostore{{product.image.url}}" alt="{{product.name}}">
+                        {% else %}
+                            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt={{product.name}} />
+                        {% endif %}
+                        <!-- Product details-->
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <!-- Product name-->
+                                <h5 class="fw-bolder">{{product.name}}</h5>
+
+                                <!-- Product reviews-->
+                                <div class="d-flex justify-content-center small text-warning mb-2">
+                                    <div class="bi-star-fill"></div>
+                                    <div class="bi-star-fill"></div>
+                                    <div class="bi-star-fill"></div>
+                                    <div class="bi-star-fill"></div>
+                                    <div class="bi-star-fill"></div>
+                                </div>
+                                 <!-- Product price-->
+                                 {% if product.promo_price|stringformat:"s" > "0.00" and user.is_authenticated %}
+                                    <span class="text-muted text-decoration-line-through">{{ product.price }} €</span>
+                                    <span>{{ product.promo_price }} €</span>                                
+                                {% else %}           
+                                    <span>{{ product.price }} €</span>                           
+                                {% endif %}
+                                <div>
+                                    <span style="font-weight: bold; color: red;">{{product.quantity}}</span>
+                                    <span> artigos restantes</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Product actions-->
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="container" style="display: inline;">
+                                <form method="POST" action="{% url 'addProductToCart' product.id %}" autocomplete="off" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="row">
+                                  <div class="col">
+                                    <input type="number" class="form-control text-center" id="quantity" name="quantity">
+                                  </div>
+                                  <div class="col">
+                                    <button class="btn btn-outline-dark mt-auto" type="submit">Adicionar</button>
+                                  </div>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <li class="list-group-item">
+                    <span>Sem produtos encontrados.</span>
+                </li>
+            {% endfor %}                                     
+            </div> 
+        </div>
+    </section>
+
+
+    <div class="container">
+        <section>
+           <div class="container px-4 px-lg-5 mt-1">
+               <h2 style="text-align: center; color: Black; padding-bottom: 2%;">Produtos por Categoria</h2>
+               <div style="width: 50%;padding-bottom: 2%;">
+                    <form action="{% url 'index' %}" method="POST" style="display: flex">
+                        <select id="categoria" name="categoria" class="form-select" required>
+                            <option>Selecione a categoria</option>
+                            {% for cate in listCategories %}
+                                <option value="{{ cate.id }}">{{ cate.name }}</option>
+                            {% endfor %}
+                        </select>
+                        {% csrf_token %}
+                        <button type="submit" style="font-weight: bold; margin-left:10px!important; font-weight: bold; width: 75%;" class="btn btn-primary">Pesquisar Produto</button>
+                    </form>
+               </div>
+               <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center" style="padding-bottom: 3%;">
+                   {% for product in listOfProductsByCategory %}
+                       <div class="col mb-5">
+                       <div class="card h-100"> 
+                           {% if product.promo_price|stringformat:"s" > "0.00" and user.is_authenticated %}
+                               <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">DESCONTO</div>
+                           {% endif %}
+
+                           <!-- Product image-->
+                           {% if product.image %}
+                           <img class="card-img-top" src="/appxptostore{{product.image.url}}" alt="{{product.name}}">
+                           {% else %}
+                               <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt={{product.name}} />
+                           {% endif %}
+                           <!-- Product details-->
+                           <div class="card-body p-4">
+                               <div class="text-center">
+                                   <!-- Product name-->
+                                   <h5 class="fw-bolder">{{product.name}}</h5>
+
+                                   <!-- Product reviews-->
+                                   <div class="d-flex justify-content-center small text-warning mb-2">
+                                       <div class="bi-star-fill"></div>
+                                       <div class="bi-star-fill"></div>
+                                       <div class="bi-star-fill"></div>
+                                       <div class="bi-star-fill"></div>
+                                       <div class="bi-star-fill"></div>
+                                   </div>
+                                   
+                                    <!-- Product price-->
+                                   {% if product.promo_price|stringformat:"s" > "0.00" and user.is_authenticated %}
+                                       <span class="text-muted text-decoration-line-through">{{ product.price }} €</span>
+                                       <span>{{ product.promo_price }} €</span>                                
+                                   {% else %}           
+                                       <span>{{ product.price }} €</span>                           
+                                   {% endif %}
+                                   
+                                   <div>
+                                       <span style="font-weight: bold; color: red;">{{product.quantity}}</span>
+                                       <span> artigos restantes</span>
+                                   </div>
+                               </div>
+                           </div>
+
+                           <!-- Product actions-->
+                           <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                               <div class="container" style="display: inline;">
+                                   <form method="POST" action="{% url 'addProductToCart' product.id %}" autocomplete="off" enctype="multipart/form-data">
+                                   {% csrf_token %}
+                                   <div class="row">
+                                     <div class="col">
+                                       <input type="number" class="form-control text-center" id="quantity" name="quantity">
+                                     </div>
+                                     <div class="col">
+                                       <button class="btn btn-outline-dark mt-auto" type="submit">Adicionar</button>
+                                     </div>
+                                   </form>
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+               {% empty %}
+                   <li class="list-group-item">
+                       <span>Sem produtos encontrados.</span>
+                   </li>
+               {% endfor %}                                     
+               </div> 
+           </div>
+       </section>
+   </div>
+
+    <div class="container">
+         <section>
+            <div class="container px-4 px-lg-5 mt-1">
+                <h2 style="text-align: center; color: Black;">Outros Produtos</h2>
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    {% for product in listIndexProduct %}
+                        <div class="col mb-5">
+                        <div class="card h-100"> 
+                            {% if product.promo_price|stringformat:"s" > "0.00" and user.is_authenticated %}
+                                <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">DESCONTO</div>
+                            {% endif %}
+
+                            <!-- Product image-->
+                            {% if product.image %}
+                            <img class="card-img-top" src="/appxptostore{{product.image.url}}" alt="{{product.name}}">
+                            {% else %}
+                                <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt={{product.name}} />
+                            {% endif %}
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Product name-->
+                                    <h5 class="fw-bolder">{{product.name}}</h5>
+
+                                    <!-- Product reviews-->
+                                    <div class="d-flex justify-content-center small text-warning mb-2">
+                                        <div class="bi-star-fill"></div>
+                                        <div class="bi-star-fill"></div>
+                                        <div class="bi-star-fill"></div>
+                                        <div class="bi-star-fill"></div>
+                                        <div class="bi-star-fill"></div>
+                                    </div>
+                                    
+                                     <!-- Product price-->
+                                    {% if product.promo_price|stringformat:"s" > "0.00" and user.is_authenticated %}
+                                        <span class="text-muted text-decoration-line-through">{{ product.price }} €</span>
+                                        <span>{{ product.promo_price }} €</span>                                
+                                    {% else %}           
+                                        <span>{{ product.price }} €</span>                           
+                                    {% endif %}
+                                    
+                                    <div>
+                                        <span style="font-weight: bold; color: red;">{{product.quantity}}</span>
+                                        <span> artigos restantes</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="container" style="display: inline;">
+                                    <form method="POST" action="{% url 'addProductToCart' product.id %}" autocomplete="off" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                      <div class="col">
+                                        <input type="number" class="form-control text-center" id="quantity" name="quantity">
+                                      </div>
+                                      <div class="col">
+                                        <button class="btn btn-outline-dark mt-auto" type="submit">Adicionar</button>
+                                      </div>
+                                    </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <li class="list-group-item">
+                        <span>Sem produtos encontrados.</span>
+                    </li>
+                {% endfor %}                                     
+                </div> 
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

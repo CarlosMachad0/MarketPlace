@@ -1,0 +1,105 @@
+{% extends 'generic-base/auth-base.html' %}
+
+{% block content %}
+  <div class="container px-3 my-5 clearfix">
+    <!-- Shopping cart table -->
+    <div class="card">
+        <div class="card-header">
+            <h2>Carrinho de Compras</h2>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered m-0">
+                <thead>
+                  <tr>
+                    <!-- Set columns width -->
+                    <th class="text-center py-3 px-4" style="min-width: 300px;">Produto</th>
+                    <th class="text-right py-3 px-4" style="width: 100px;">Preço</th>
+                    <th class="text-center py-3 px-4" style="width: 120px;">Quantidade</th>
+                    <th class="text-right py-3 px-4" style="width: 270px;">Total</th>
+                    <th class="text-center align-middle py-3 px-0" style="width: 120px;">
+                      Ações
+                      <a href="#" class="shop-tooltip float-none text-light" title="" data-original-title="Clear cart">
+                        <i class="ino ion-md-trash"></i>
+                      </a>
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {% for product in products %}
+                    <tr>
+                      <td class="p-4">
+                        <div class="media align-items-center">
+                          <img style="width: 100px; height: 100px" src="/appxptostore{{product.image}}" class="d-block ui-w-40 ui-bordered mr-4" alt="">
+                          <div class="media-body">
+                            <a href="#" class="d-block text-dark">{{ product.name }}</a>
+                            <small>
+                            </small>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="text-right font-weight-semibold align-middle p-4"> {{ product.price }} € </td>
+                      <td class="align-middle p-4">
+                        <div style="display: flex;">
+
+                          <form method="POST" action="{% url 'update_cart' product.id %}">
+                            {% csrf_token %}
+                            <div style="display: flex;">
+                              <input style="width: 70px; margin-right: 5px;" type="number" class="form-control text-center" id="newQuantity" name="newQuantity" value="{{ product.productQuantity }}">
+                              <button type="submit" style="font-weight: bold;" class="btn btn-warning">Atualizar</button>
+                            </div>
+                          </form>
+                        </div>
+                      </td>
+                      <td class="text-right font-weight-semibold align-middle p-4">{{product.productTotal}} €</td>
+                      <td class="align-middle p-4">
+                        <form method="POST" action="{% url 'remove_from_cart' product.id %}" style="margin-right: 5px;">
+                          {% csrf_token %}
+                          <button type="submit" style="font-weight: bold;" class="btn btn-danger">Eliminar</button>
+                        </form>
+                      </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+
+            <!-- / Shopping cart table -->
+
+            <div class="d-flex" style="justify-content: flex-end;">
+              <div class="d-flex">
+                <div class="text-right mt-4">
+                  <label class="text-muted font-weight-bold m-0" style="font-size: 25px;">Preço Total</label>
+                  <div class="text-large" style="font-size: 25px; color: red;"><strong>{{ totalPrice }} €</strong></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex" style="justify-content: flex-end; padding-top: 2%">
+              <div style="padding-right: 1%;">
+                <form  action="{% url 'index' %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-lg btn-primary mt-2">Continuar a comprar</button>
+                </form>
+              </div>
+              <div>
+                <form method="POST" action="{% url 'checkout-cart' %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-lg btn-success mt-2">Checkout</button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: center;">
+            <h5 style="color: red!important; padding-top: 3%; font-size: 25px;" class="mb-0 text-muted">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </h5>
+          </div> 
+
+      </div>
+  </div>
+{% endblock %}
