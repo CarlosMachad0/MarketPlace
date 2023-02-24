@@ -1,0 +1,11 @@
+CREATE FUNCTION getOrderbottom(Totalprice double precision)
+RETURNS TABLE(id INTEGER,client_id INTEGER,client_address varchar(100),payment_info varchar(100),orderdata timestamp with time zone,shipped_date timestamp with time zone,shipped_status boolean,order_completed boolean,total_price double precision)
+AS 
+$$
+begin
+    RETURN QUERY SELECT *
+    FROM appxptostore_order
+    WHERE appxptostore_order.total_price <Totalprice;
+end;
+$$ 
+LANGUAGE plpgsql;

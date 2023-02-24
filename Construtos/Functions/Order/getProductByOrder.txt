@@ -1,0 +1,10 @@
+CREATE FUNCTION getProductByOrder(p_order_id INTEGER)
+RETURNS TABLE (Product INTEGER,Quantity_P INTEGER,Price_P double precision,TotalPrice double precision)
+AS 
+$$
+begin
+    RETURN QUERY SELECT product_id,quantity,price,appxptostore_order.total_price 
+    FROM appxptostore_orderdetails inner join appxptostore_order on appxptostore_order.id="orderID_id"  where "orderID_id" = p_order_id;
+end;
+$$ 
+LANGUAGE plpgsql;

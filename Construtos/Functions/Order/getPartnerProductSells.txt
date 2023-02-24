@@ -1,0 +1,10 @@
+CREATE OR REPLACE FUNCTION getPartnerProductSells(product_sell_id INTEGER)
+RETURNS TABLE (prod_id INTEGER, sellsCount BIGINT) AS $$
+begin
+       RETURN QUERY SELECT product_id, sum(quantity) as num_orders
+        FROM appxptostore_OrderDetails where product_id=product_sell_id
+        GROUP BY product_id,quantity;
+end;
+$$ 
+LANGUAGE plpgsql;
+

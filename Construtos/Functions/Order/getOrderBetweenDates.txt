@@ -1,0 +1,9 @@
+CREATE OR REPLACE function getOrderBetweenDates(dateinf timestamp,datesup timestamp)
+RETURNS TABLE(id INTEGER,client_id INTEGER,client_address varchar(100),payment_info varchar(100),orderdata timestamp with time zone,shipped_date timestamp with time zone,shipped_status boolean,order_completed boolean,total_price double precision)
+AS $$
+BEGIN
+    RETURN QUERY SELECT *
+    FROM appxptostore_order
+    WHERE order_data < datesup and order_data > dateinf;
+END
+$$ language plpgsql;

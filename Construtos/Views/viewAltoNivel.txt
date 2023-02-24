@@ -1,0 +1,13 @@
+create or replace view lastHourOrders as 
+SELECT COUNT(*) FROM appxptostore_order WHERE order_data >= NOW() - INTERVAL '1 hour';
+
+create or replace view todayOrders as 
+SELECT COUNT(*) FROM appxptostore_order WHERE order_data >= CAST(NOW() AS DATE);
+
+create or replace view lastWeekOrders as 
+SELECT COUNT(*) FROM appxptostore_order WHERE order_data >= NOW() - INTERVAL '1 week';
+
+create or replace view lastMonthOrders as 
+SELECT COUNT(*) FROM appxptostore_order WHERE order_data >= NOW() - INTERVAL '1 month';
+
+

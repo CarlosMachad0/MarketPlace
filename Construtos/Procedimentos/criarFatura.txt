@@ -1,0 +1,30 @@
+CREATE OR REPLACE PROCEDURE criarFatura(order_id INTEGER)
+AS $$
+DECLARE
+    nrFatura INTEGER;
+    anoAtual INTEGER;
+    countOrder INTEGER;
+	iva INTEGER = 23;
+	nomeLoja VARCHAR(10) = 'XPTO';
+BEGIN
+    IF order_id IS NULL THEN
+        RAISE EXCEPTION 'Id encomenda inválido';
+    END IF;
+
+    SELECT COUNT(*) INTO countOrder FROM appxptostore_order WHERE id = order_id;
+    IF countOrder = 0 THEN
+        RAISE EXCEPTION 'Encomenda não existe';
+    END IF;
+	
+	SELECT COUNT(*) INTO countOrder FROM appxptostore_faturas WHERE "orderID_id" = order_id;
+    IF countOrder > 0 THEN
+        RAISE EXCEPTION 'Já existe fatura para a encomenda %', order_id;
+    END IF;
+
+    SELECT nextval('sequencia_faturas') INTO nrFatura FROM sequencia_faturas;
+    anoAtual = EXTRACT(YEAR FROM CURRENT_DATE);
+	INSERT INTO appxptostore_faturas (nr_fatura, data_fatura,"isCanceled","orderID_id",iva)
+    VALUES (nomeLoja || anoAtual || '|' || order_id || '|' || nrFatura,NOW(),false,order_id,iva);
+
+END;
+$$ LANGUAGE plpgsql;

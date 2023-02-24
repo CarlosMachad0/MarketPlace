@@ -1,0 +1,13 @@
+CREATE OR REPLACE PROCEDURE updateStatusShipped(
+  IN order_id INTEGER )
+AS $$
+BEGIN
+       if order_id is not null then
+            update appxptostore_order
+            set shipped_date=NOW(),shipped_status=TRUE
+            where id=order_id;
+        else
+               raise exception 'Não pode ter valores nulos!';
+        end if;
+END
+$$ language plpgsql;

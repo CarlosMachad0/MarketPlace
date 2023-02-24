@@ -1,0 +1,65 @@
+-----CLIENT USER
+CREATE USER clientuser 			WITH PASSWORD 'client'; 					--CRIAR UTILIZADOR
+GRANT CONNECT ON DATABASE "BD2" TO clientUser; 								--PERMITIR ACESSO À BD
+GRANT USAGE ON SCHEMA public TO clientUser;									--PERMITE ACESSO AO SCHEMA
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO clientUser; 			--PERMISSOES PARA VIEWS PROCEDIMENTOS ETC
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO clientUser; 
+
+-----ADMIN USER
+CREATE USER adminuser 			WITH PASSWORD 'admin'; 						--CRIAR ADMINISTRADOR
+GRANT CONNECT ON DATABASE "BD2" TO adminuser; 								--PERMITIR ACESSO À BD
+GRANT USAGE ON SCHEMA public TO adminuser;									--PERMITE ACESSO AO SCHEMA
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO clientUser; 					--PERMISSOES PARA VIEWS PROCEDIMENTOS ETC
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO adminuser; 
+
+-----COMERCIAL ONE USER
+CREATE USER comercialone 		WITH PASSWORD 'comercialone';
+GRANT CONNECT ON DATABASE "BD2" TO comercialone; 	
+GRANT USAGE ON SCHEMA public TO comercialone;		
+GRANT SELECT, UPDATE ON ALL TABLES IN SCHEMA public TO comercialone; 
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO 'comercialone';
+
+-----COMERCIAL TWO USER
+CREATE USER comercialtwo 		WITH PASSWORD 'comercialtwo';
+GRANT CONNECT ON DATABASE "BD2" TO comercialtwo; 	
+GRANT USAGE ON SCHEMA public TO comercialtwo;		
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO comercialtwo;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO 'comercialtwo';	
+
+
+use BD2
+db.createUser(
+  {
+    user: "fullPerm",
+    pwd: "fullPerm",
+    roles: [
+       { role: "readWrite", db: "BD2" },
+       { role: "dbAdmin", db: "BD2" }
+    ]
+  }
+)
+
+use BD2
+db.createUser({
+	user: "readpearm",
+	pwd: "readpearm",
+	roles: [ 
+		{ role: "read", db: "BD2" } 
+	]
+})
+
+
+
+DATABASES = {
+    # POSTGRES
+    'clientUser'    : {'ENGINE': 'django.db.backends.postgresql','NAME': 'BD2', 'USER': 'clientuser',   'PASSWORD': 'client',       'HOST': 'localhost'},
+    'adminUser'     : {'ENGINE': 'django.db.backends.postgresql','NAME': 'BD2', 'USER': 'adminuser',    'PASSWORD': 'admin',        'HOST': 'localhost'},
+    'comercialOne'  : {'ENGINE': 'django.db.backends.postgresql','NAME': 'BD2', 'USER': 'comercialone', 'PASSWORD': 'comercialone', 'HOST': 'localhost'},
+    'comercialTwo'  : {'ENGINE': 'django.db.backends.postgresql','NAME': 'BD2', 'USER': 'comercialtwo', 'PASSWORD': 'comercialtwo', 'HOST': 'localhost'},
+
+    # MONGO DB
+    'default'   : {'ENGINE': 'djongo', 'NAME': 'BD2'},
+    'postgres'  : {'ENGINE': 'django.db.backends.postgresql','NAME': 'BD2', 'USER': 'postgres', 'PASSWORD': '12345', 'HOST': 'localhost'},
+    #'admin'     : {'ENGINE': 'django.db.backends.postgresql','NAME': 'BD2', 'USER': 'postgres', 'PASSWORD': '12345', 'HOST': 'localhost'},
+    #'cliente'   : {'ENGINE': 'django.db.backends.postgresql','NAME': 'BD2', 'USER': 'postgres', 'PASSWORD': '12345', 'HOST': 'localhost'}
+}

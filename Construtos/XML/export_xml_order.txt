@@ -1,0 +1,31 @@
+CREATE OR REPLACE FUNCTION export_xml_order(order_id INTEGER)
+RETURNS XML AS $$
+BEGIN
+    RETURN (
+        SELECT XMLELEMENT(name "Fatura", 
+    (
+		 XMLCONCAT(XMLAGG(XMLELEMENT(name "Info",
+				XMLFOREST(
+					F.nr_fatura AS "Numero",
+					F.data_fatura AS "Data"
+				)
+			)),
+			XMLAGG(XMLELEMENT(name "Encomenda",
+				XMLFOREST(
+					O.client_address AS "EndereçoEntrega",
+					O.payment_info AS "MetodoPagamento",
+					O.order_data AS "DataEncomenda",
+					O.total_price * (1 + (F.iva / 100.0)) AS "PreçoTotal",
+					(SELECT COUNT(*) FROM appxptostore_orderdetails OD WHERE OD."orderID_id" = O.id) AS "NumeroProdutos"
+				)
+			)
+			 ))
+			)
+		)
+	FROM appxptostore_faturas F
+	INNER JOIN appxptostore_order O ON O.id = F."orderID_id"
+	INNER JOIN appxptostore_orderdetails OD ON OD."orderID_id" = O.id
+	WHERE O.id = order_id
+    );
+END;
+$$ LANGUAGE plpgsql;

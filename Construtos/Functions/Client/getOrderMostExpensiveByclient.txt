@@ -1,0 +1,12 @@
+ CREATE or replace FUNCTION getOrderMostExpensiveByclient(
+  IN p_clientID INTEGER
+) RETURNS TABLE (total double precision) AS $$
+BEGIN
+    RETURN QUERY 
+      SELECT *
+      FROM (
+        SELECT appxptostore_order.total_price
+        FROM appxptostore_order 
+		where appxptostore_order.total_price=(SELECT MAX(appxptostore_order.total_price) FROM appxptostore_order where client_id=p_clientID ) and client_id=p_clientID) as subquery1;
+END;
+$$ LANGUAGE plpgsql;

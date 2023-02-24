@@ -1,0 +1,7 @@
+CREATE FUNCTION getTotalspentByclient(
+  IN p_clientID INTEGER
+) RETURNS TABLE (total Double Precision) AS $$
+BEGIN
+    RETURN QUERY SELECT SUM(total_price) FROM appxptostore_order where client_id=p_clientID;
+END;
+$$ LANGUAGE plpgsql;

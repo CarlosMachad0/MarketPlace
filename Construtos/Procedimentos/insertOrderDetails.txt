@@ -1,0 +1,16 @@
+create or replace procedure insertProductOrderDetails(
+  IN product_id INTEGER,
+  IN quantity INTEGER,
+  IN price DOUBLE PRECISION,
+  IN p_orderID_id INTEGER
+)
+as $$
+begin
+   if product_id is not null and quantity is not null and p_orderID_id is not null and price is not null then
+        insert into appxptostore_orderdetails(product_id,quantity,price,"orderID_id")
+        values (product_id, quantity,price,p_orderID_id);
+    else
+          raise exception 'Não pode ter valores nulos!';
+  end if;
+end;
+$$ language plpgsql;

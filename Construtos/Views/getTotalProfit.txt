@@ -1,0 +1,4 @@
+
+create or replace view getTotalProfit as
+	select sum(total_price) from appxptostore_order where appxptostore_order."isCanceled"=false
+   

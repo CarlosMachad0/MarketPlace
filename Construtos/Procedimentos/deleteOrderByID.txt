@@ -1,0 +1,13 @@
+create or replace procedure deleteOrderByID(
+  IN p_orderID INTEGER
+)
+as $$
+begin
+   if p_orderID is not null then
+        delete from appxptostore_orderdetails where "orderID_id"=p_orderID;
+		delete from appxptostore_order where appxptostore_order.id=p_orderID;
+  else
+      raise exception 'Não pode ter valores nulos!';
+  end if;
+end;
+$$ language plpgsql;

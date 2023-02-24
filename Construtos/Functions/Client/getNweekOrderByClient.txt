@@ -1,0 +1,9 @@
+CREATE FUNCTION getNweekOrderByClient(
+  IN p_clientID INTEGER
+) RETURNS TABLE (total bigint ) AS $$
+BEGIN
+    RETURN QUERY SELECT count(client_id) FROM appxptostore_order 
+	where client_id=p_clientID and date_part('week', order_data) = date_part('week', current_date);
+END;
+$$ LANGUAGE plpgsql;
+

@@ -1,0 +1,18 @@
+CREATE FUNCTION quantityValidate()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.quantity <= 0  then
+    RAISE EXCEPTION 'Quantidade inferior ou igual 0';
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE TRIGGER quantityValidateTrigger
+BEFORE INSERT OR UPDATE
+ON appxptostore_orderdetails
+FOR EACH ROW
+EXECUTE PROCEDURE quantityValidate();
+

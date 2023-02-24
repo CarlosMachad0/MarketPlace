@@ -1,0 +1,3 @@
+create or replace view allOrdersOrderCanceled as
+	select * from appxptostore_order where appxptostore_order."isCanceled"=true
+	order by order_data asc

@@ -1,0 +1,3 @@
+create or replace view getlistBestProduct as
+SELECT product_id, SUM(quantity) AS su FROM appxptostore_orderdetails 
+group by product_id order by su desc LIMIT 4

@@ -1,0 +1,24 @@
+CREATE OR REPLACE FUNCTION cancel_pending_order_biggerThanXTime()
+RETURNS TRIGGER AS $$
+DECLARE
+    cur CURSOR FOR SELECT * FROM appxptostore_order;
+    rec RECORD;
+BEGIN
+    FOR rec IN cur LOOP
+        -- Calculate the time difference between the order date and the current date
+        IF (now() - rec.order_data) > INTERVAL '2 week' THEN
+            -- If the order has not been shipped yet
+            IF rec.shipped_date IS NULL THEN
+                -- Set the isCanceled field to True
+                UPDATE appxptostore_order SET isCanceled = TRUE WHERE CURRENT OF cur;
+            END IF;
+        END IF;
+    END LOOP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER cancel_pending_order_trigger
+AFTER INSERT OR UPDATE OF order_data, shipped_date ON appxptostore_order
+FOR EACH ROW
+EXECUTE PROCEDURE cancel_pending_order_biggerThanXTime();

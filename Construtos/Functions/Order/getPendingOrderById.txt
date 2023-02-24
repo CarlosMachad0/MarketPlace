@@ -1,0 +1,35 @@
+CREATE FUNCTION getPendingOrderById(p_client_id INTEGER)
+RETURNS TABLE(id INTEGER,client_id INTEGER,client_address varchar(100),payment_info varchar(100),orderdata timestamp with time zone,shipped_date timestamp with time zone,shipped_status boolean,order_completed boolean,total_price double precision,isCanceled boolean)
+AS 
+$$
+begin
+       RETURN QUERY SELECT *
+    FROM appxptostore_order
+    WHERE appxptostore_order.client_id = p_client_id and appxptostore_order.order_completed=FAlSE;
+end;
+$$ 
+LANGUAGE plpgsql;sql;
+
+----------------------------------------------
+
+CREATE FUNCTION getPendingOrderById(p_client_id INTEGER)
+RETURNS TABLE(id INTEGER,client_id INTEGER,client_address varchar(100),payment_info varchar(100),orderdata timestamp with time zone,shipped_date timestamp with time zone,shipped_status boolean,order_completed boolean,total_price double precision,isCanceled boolean)
+AS 
+$$
+begin
+       RETURN QUERY SELECT 
+	   appxptostore_order.id, 
+	   appxptostore_order.client_id, 
+	   appxptostore_order.client_address, 
+	   appxptostore_order.payment_info, 
+	   appxptostore_order.order_data, 
+	   appxptostore_order.shipped_date, 
+	   appxptostore_order.shipped_status, 
+	   appxptostore_order.order_completed, 
+	   appxptostore_order.total_price, 
+	   appxptostore_order."isCanceled"
+		FROM appxptostore_order
+	   WHERE appxptostore_order.client_id = p_client_id and appxptostore_order.order_completed=FAlSE;
+end;
+$$ 
+LANGUAGE plpgsql;

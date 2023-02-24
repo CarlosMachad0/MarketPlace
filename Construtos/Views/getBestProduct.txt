@@ -1,0 +1,5 @@
+create or replace view getBestProduct as
+SELECT product_id, SUM(quantity) AS su FROM appxptostore_orderdetails 
+group by product_id order by su desc LIMIT 1
+
+select * from getBestProduct

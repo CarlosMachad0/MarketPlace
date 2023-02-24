@@ -1,0 +1,3 @@
+create or replace view getBestClient as
+select client_id,sum(total_price) as T from appxptostore_order 
+group by client_id order by T desc limit 1

@@ -1,0 +1,27 @@
+CREATE OR REPLACE FUNCTION validate_invoice_insert() RETURNS TRIGGER AS $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM appxptostore_faturas WHERE "orderID_id" = NEW."orderID_id") THEN
+    RAISE EXCEPTION 'Já existe fatura para a encomenda % com o numero %', NEW."orderID_id", NEW."nr_fatura";
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER validate_invoice
+BEFORE INSERT ON appxptostore_faturas
+FOR EACH ROW
+EXECUTE FUNCTION validate_invoice_insert();
+
+
+CREATE OR REPLACE FUNCTION criar_fatura_on_criacao_encomenda()
+RETURNS TRIGGER AS $$
+BEGIN
+    CALL criarFatura(NEW.id);
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER criar_fatura_on_criacao_encomenda
+AFTER INSERT ON appxptostore_order
+FOR EACH ROW
+EXECUTE FUNCTION criar_fatura_on_criacao_encomenda();

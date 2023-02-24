@@ -1,0 +1,4 @@
+create or replace view expensiveOrder as
+	select * from appxptostore_order
+	where total_price =(select  max(total_price) from appxptostore_order) and appxptostore_order."isCanceled"=false
+	

@@ -1,0 +1,13 @@
+create function getNOrderByclient(
+  IN p_clientID INTEGER
+)
+returns table (Total bigint)
+as $$
+begin
+        if p_clientID is not null then
+        return query select count(client_id) from appxptostore_order where client_id=p_clientID; 
+  else
+      raise exception 'Não pode ter valores nulos!';
+  end if;
+end;
+$$ language plpgsql;

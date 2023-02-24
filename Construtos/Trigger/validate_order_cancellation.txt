@@ -1,0 +1,19 @@
+CREATE OR REPLACE FUNCTION validate_order_cancellation()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- If the order is being marked as canceled
+    IF NEW."isCanceled" = TRUE THEN
+        -- If the order has already been shipped
+        IF NEW.shipped_date IS NOT NULL THEN
+            -- Raise an error
+            RAISE EXCEPTION 'Não podes cancelar uma encomenda que já foi enviada';
+        END IF;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER validate_order_cancellation_trigger
+AFTER INSERT OR UPDATE OF "isCanceled" ON appxptostore_order
+FOR EACH ROW
+EXECUTE PROCEDURE validate_order_cancellation();

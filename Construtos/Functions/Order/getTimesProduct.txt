@@ -1,0 +1,8 @@
+create or replace function getTimesProduct(product integer )
+returns table(id integer,times bigint)
+as $$
+begin
+    return query 
+        select product_id,count(product_id) from appxptostore_orderdetails where product_id=product group by product_id;
+end;
+$$ Language plpgsql;

@@ -1,0 +1,19 @@
+CREATE OR REPLACE FUNCTION validate_order_completion()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- If the order is being marked as completed
+    IF NEW.order_completed = TRUE THEN
+        -- If the order has not been shipped yet
+        IF NEW.shipped_date IS NULL THEN
+            -- Raise an error
+            RAISE EXCEPTION 'Não podes finalizar a encomenda sem ter sido enviada antes';
+        END IF;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER validate_order_completion_trigger
+AFTER INSERT OR UPDATE OF order_completed ON appxptostore_order
+FOR EACH ROW
+EXECUTE PROCEDURE validate_order_completion();

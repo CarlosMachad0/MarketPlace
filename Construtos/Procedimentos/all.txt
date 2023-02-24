@@ -1,0 +1,100 @@
+create or replace procedure deleteOrderByID(
+  IN p_orderID INTEGER
+)
+as $$
+begin
+   if p_orderID is not null then
+        delete from appxptostore_orderdetails where "orderID_id"=p_orderID;
+		delete from appxptostore_order where appxptostore_order.id=p_orderID;
+  else
+      raise exception 'Não pode ter valores nulos!';
+  end if;
+end;
+$$ language plpgsql;
+
+
+create or replace procedure insertNewOrder(
+  IN p_client_id INTEGER,
+  IN client_address varchar(100),
+  IN payment_info varchar(100),
+  IN total_price DOUBLE PRECISION,
+  OUT p_order_id INTEGER
+)
+as $$
+begin
+   if p_client_id is not null and client_address is not null and payment_info is not null and total_price is not null  then
+		
+		PERFORM * FROM appxptostore_order FOR UPDATE;
+		
+        insert into appxptostore_order(client_id, client_address, payment_info, order_data,shipped_date,shipped_status, order_completed, total_price,"isCanceled")
+        values (p_client_id, client_address, payment_info, NOW(), null, false, false,total_price,false);
+        SELECT max(appxptostore_order.id) from appxptostore_order INTO p_order_id;
+  else
+      raise exception 'Não pode ter valores nulos!';
+  end if;
+end;
+$$ language plpgsql;
+
+create or replace procedure insertProductOrderDetails(
+  IN product_id INTEGER,
+  IN quantity INTEGER,
+  IN price DOUBLE PRECISION,
+  IN p_orderID_id INTEGER
+)
+as $$
+begin
+   if product_id is not null and quantity is not null and p_orderID_id is not null and price is not null then
+        insert into appxptostore_orderdetails(product_id,quantity,price,"orderID_id")
+        values (product_id, quantity,price,p_orderID_id);
+    else
+          raise exception 'Não pode ter valores nulos!';
+  end if;
+end;
+$$ language plpgsql;
+
+
+CREATE OR REPLACE PROCEDURE UpdateStatusShipped(
+  IN order_id INTEGER )
+AS $$
+BEGIN
+       if order_id is not null then
+            update appxptostore_order
+            set shipped_date=NOW(),shipped_status=TRUE
+            where id=order_id;
+        else
+               raise exception 'Não pode ter valores nulos!';
+        end if;
+END
+$$ language plpgsql;
+
+CREATE OR REPLACE PROCEDURE criarFatura(order_id INTEGER)
+AS $$
+DECLARE
+    nrFatura INTEGER;
+    anoAtual INTEGER;
+    countOrder INTEGER;
+	iva INTEGER = 23;
+	nomeLoja VARCHAR(10) = 'XPTO';
+BEGIN
+    IF order_id IS NULL THEN
+        RAISE EXCEPTION 'Id encomenda inválido';
+    END IF;
+
+    SELECT COUNT(*) INTO countOrder FROM appxptostore_order WHERE id = order_id;
+    IF countOrder = 0 THEN
+        RAISE EXCEPTION 'Encomenda não existe';
+    END IF;
+	
+	SELECT COUNT(*) INTO countOrder FROM appxptostore_faturas WHERE "orderID_id" = order_id;
+    IF countOrder > 0 THEN
+        RAISE EXCEPTION 'Já existe fatura para a encomenda %', order_id;
+    END IF;
+
+    SELECT nextval('sequencia_faturas') INTO nrFatura FROM sequencia_faturas;
+    anoAtual = EXTRACT(YEAR FROM CURRENT_DATE);
+	INSERT INTO appxptostore_faturas (nr_fatura, data_fatura,"isCanceled","orderID_id",iva)
+    VALUES (nomeLoja || anoAtual || '|' || order_id || '|' || nrFatura,NOW(),false,order_id,iva);
+
+END;
+$$ LANGUAGE plpgsql;
+

@@ -1,0 +1,59 @@
+CREATE OR REPLACE FUNCTION getClientOrderById(p_client_id INTEGER)
+RETURNS TABLE(id INTEGER,client_id INTEGER,client_address varchar(100),payment_info varchar(100),orderdata timestamp with time zone,shipped_date timestamp with time zone,shipped_status boolean,order_completed boolean,total_price double precision)
+AS 
+$$
+begin
+       RETURN QUERY SELECT *
+    FROM appxptostore_order
+    WHERE appxptostore_order.client_id = p_client_id;
+end;
+$$ 
+LANGUAGE plpgsql;
+
+create function getNOrderByclient(
+  IN p_clientID INTEGER
+)
+returns table (Total bigint)
+as $$
+begin
+        if p_clientID is not null then
+        return query select count(client_id) from appxptostore_order where client_id=p_clientID; 
+  else
+      raise exception 'Não pode ter valores nulos!';
+  end if;
+end;
+$$ language plpgsql;
+
+CREATE FUNCTION getNweekOrderByClient(
+  IN p_clientID INTEGER
+) RETURNS TABLE (total bigint ) AS $$
+BEGIN
+    RETURN QUERY SELECT count(client_id) FROM appxptostore_order 
+	where client_id=p_clientID and date_part('week', order_data) = date_part('week', current_date);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE or replace FUNCTION getOrderMostExpensiveByclient(
+  IN p_clientID INTEGER
+) RETURNS TABLE (total double precision) AS $$
+BEGIN
+    RETURN QUERY 
+      SELECT *
+      FROM (
+        SELECT appxptostore_order.total_price
+        FROM appxptostore_order 
+		where appxptostore_order.total_price=(SELECT MAX(appxptostore_order.total_price) FROM appxptostore_order where client_id=p_clientID ) and client_id=p_clientID) as subquery1;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE FUNCTION getTotalspentByclient(
+  IN p_clientID INTEGER
+) RETURNS TABLE (total Double Precision) AS $$
+BEGIN
+    RETURN QUERY SELECT SUM(total_price) FROM appxptostore_order where client_id=p_clientID;
+END;
+$$ LANGUAGE plpgsql;
+
+
+

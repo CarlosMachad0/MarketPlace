@@ -1,0 +1,57 @@
+create or replace view allOrdersOrderCanceled as
+	select * from appxptostore_order where appxptostore_order."isCanceled"=true
+	order by order_data asc
+
+create or replace view allOrdersOrder as
+	select * from appxptostore_order where appxptostore_order."isCanceled"=false
+	order by order_data asc
+	
+
+create or replace view getlistBestProduct as
+SELECT product_id, SUM(quantity) AS su FROM appxptostore_orderdetails 
+group by product_id order by su desc LIMIT 4
+
+
+create or replace view expensiveOrder as
+	select * from appxptostore_order
+	where total_price =(select  max(total_price) from appxptostore_order) and appxptostore_order."isCanceled"=false
+	
+
+create or replace view getBestClient as
+	select client_id,sum(total_price) as T from appxptostore_order 
+	group by client_id order by T desc limit 1
+
+
+create or replace view getTotalProfit as
+	select sum(total_price) from appxptostore_order where appxptostore_order."isCanceled"=false
+   
+
+create or replace view getWorstProduct as
+SELECT product_id, SUM(quantity) AS su FROM appxptostore_orderdetails 
+group by product_id order by su asc LIMIT 1
+
+
+
+create or replace view getBestProduct as
+SELECT product_id, SUM(quantity) AS su FROM appxptostore_orderdetails 
+group by product_id order by su desc LIMIT 1
+
+
+create or replace view lastHourOrders as 
+SELECT COUNT(*) FROM appxptostore_order WHERE order_data >= NOW() - INTERVAL '1 hour';
+
+
+create or replace view todayOrders as 
+SELECT COUNT(*) FROM appxptostore_order WHERE order_data >= CAST(NOW() AS DATE);
+
+create or replace view lastWeekOrders as 
+SELECT COUNT(*) FROM appxptostore_order WHERE order_data >= NOW() - INTERVAL '1 week';
+
+create or replace view lastMonthOrders as 
+SELECT COUNT(*) FROM appxptostore_order WHERE order_data >= NOW() - INTERVAL '1 month';
+
+
+
+
+
+

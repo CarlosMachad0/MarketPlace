@@ -1,0 +1,125 @@
+CREATE FUNCTION getConcludedOrderById(p_client_id INTEGER)
+RETURNS TABLE(id INTEGER,client_id INTEGER,client_address varchar(100),payment_info varchar(100),orderdata timestamp with time zone,shipped_date timestamp with time zone,shipped_status boolean,order_completed boolean,total_price double precision,isCanceled boolean)
+AS 
+$$
+begin
+       RETURN QUERY SELECT *
+    FROM appxptostore_order
+    WHERE appxptostore_order.client_id = p_client_id and appxptostore_order.order_completed=TRUE;
+end;
+$$ 
+LANGUAGE plpgsql;
+
+create or replace function getTimesProduct(product integer )
+returns table(id integer,times bigint)
+as $$
+begin
+    return query 
+        select product_id,count(product_id) from appxptostore_orderdetails where product_id=product group by product_id;
+end;
+$$ Language plpgsql;
+
+CREATE OR REPLACE function getOrderBetweenDates(dateinf timestamp,datesup timestamp)
+RETURNS TABLE(id INTEGER,client_id INTEGER,client_address varchar(100),payment_info varchar(100),orderdata timestamp with time zone,shipped_date timestamp with time zone,shipped_status boolean,order_completed boolean,total_price double precision,isCanceled boolean)
+AS $$
+BEGIN
+    RETURN QUERY SELECT *
+    FROM appxptostore_order
+    WHERE order_data < datesup and order_data > dateinf;
+END
+$$ language plpgsql;
+
+
+CREATE FUNCTION getOrderbottom(Totalprice double precision)
+RETURNS TABLE(id INTEGER,client_id INTEGER,client_address varchar(100),payment_info varchar(100),orderdata timestamp with time zone,shipped_date timestamp with time zone,shipped_status boolean,order_completed boolean,total_price double precision,isCanceled boolean)
+AS 
+$$
+begin
+    RETURN QUERY SELECT *
+    FROM appxptostore_order
+    WHERE appxptostore_order.total_price <Totalprice;
+end;
+$$ 
+LANGUAGE plpgsql;
+
+
+
+CREATE FUNCTION getOrderhigher(Totalprice double precision)
+RETURNS TABLE(id INTEGER,client_id INTEGER,client_address varchar(100),payment_info varchar(100),orderdata timestamp with time zone,shipped_date timestamp with time zone,shipped_status boolean,order_completed boolean,total_price double precision,isCanceled boolean)
+AS 
+$$
+begin
+    RETURN QUERY SELECT *
+    FROM appxptostore_order
+    WHERE appxptostore_order.total_price >Totalprice;
+end;
+$$ 
+LANGUAGE plpgsql;
+
+CREATE FUNCTION getPendingOrderById(p_client_id INTEGER)
+RETURNS TABLE(id INTEGER,client_id INTEGER,client_address varchar(100),payment_info varchar(100),orderdata timestamp with time zone,shipped_date timestamp with time zone,shipped_status boolean,order_completed boolean,total_price double precision,isCanceled boolean)
+AS 
+$$
+begin
+       RETURN QUERY SELECT *
+    FROM appxptostore_order
+    WHERE appxptostore_order.client_id = p_client_id and appxptostore_order.order_completed=FAlSE;
+end;
+$$ 
+LANGUAGE plpgsql;
+
+CREATE FUNCTION getProductByOrder(p_order_id INTEGER)
+RETURNS TABLE (Product INTEGER,Quantity_P INTEGER,Price_P double precision,TotalPrice double precision)
+AS 
+$$
+begin
+    RETURN QUERY SELECT product_id,quantity,price,appxptostore_order.total_price 
+    FROM appxptostore_orderdetails inner join appxptostore_order on appxptostore_order.id="orderID_id"  where "orderID_id" = p_order_id;
+end;
+$$ 
+LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE PROCEDURE setCompletedOrder(
+  IN order_id INTEGER )
+AS $$
+BEGIN
+       if order_id is not null then
+            update appxptostore_order
+            set order_completed=TRUE
+            where id=order_id;
+        else
+               raise exception 'Não pode ter valores nulos!';
+        end if;
+END
+$$ language plpgsql;
+
+
+CREATE OR REPLACE PROCEDURE setCanceledOrder(
+  IN order_id INTEGER )
+AS $$
+BEGIN
+       if order_id is not null then
+            update appxptostore_order
+            set "isCanceled"=TRUE
+            where id=order_id;
+        else
+               raise exception 'Não pode ter valores nulos!';
+        end if;
+END
+$$ language plpgsql;
+
+CREATE OR REPLACE PROCEDURE updateStatusShipped(
+  IN order_id INTEGER )
+AS $$
+BEGIN
+       if order_id is not null then
+            update appxptostore_order
+            set shipped_date=NOW(),shipped_status=TRUE
+            where id=order_id;
+        else
+               raise exception 'Não pode ter valores nulos!';
+        end if;
+END
+$$ language plpgsql;

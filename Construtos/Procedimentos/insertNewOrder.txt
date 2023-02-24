@@ -1,0 +1,21 @@
+create or replace procedure insertNewOrder(
+  IN p_client_id INTEGER,
+  IN client_address varchar(100),
+  IN payment_info varchar(100),
+  IN total_price DOUBLE PRECISION,
+  OUT p_order_id INTEGER
+)
+as $$
+begin
+   if p_client_id is not null and client_address is not null and payment_info is not null and total_price is not null  then
+		
+		PERFORM * FROM appxptostore_order FOR UPDATE;
+		
+        insert into appxptostore_order(client_id, client_address, payment_info, order_data,shipped_date,shipped_status, order_completed, total_price,"isCanceled")
+        values (p_client_id, client_address, payment_info, NOW(), null, false, false,total_price,false);
+        SELECT max(appxptostore_order.id) from appxptostore_order INTO p_order_id;
+  else
+      raise exception 'Não pode ter valores nulos!';
+  end if;
+end;
+$$ language plpgsql;
