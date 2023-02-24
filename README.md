@@ -1,5 +1,5 @@
 # MarketPlace
-##Loja online 
+## Loja online 
 
 A loja Xpto permite aos clientes realizar a compra de um ou mais produtos disponíveis (em stock) para
 venda. A consulta dos produtos disponíveis pode ser realizada por qualquer pessoa. No entanto, a
